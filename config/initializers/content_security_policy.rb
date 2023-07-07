@@ -3,7 +3,7 @@
 # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
 
 def host_to_url(str)
-  "http#{Rails.configuration.x.use_https ? 's' : ''}://#{str}" unless str.blank?
+  "http#{Rails.configuration.x.use_https ? 's' : ''}://#{str}".split('/').first if str.present?
 end
 
 base_host = Rails.configuration.x.web_domain
@@ -36,7 +36,7 @@ Rails.application.config.content_security_policy do |p|
     p.worker_src  :self, :blob, assets_host
   else
     p.connect_src :self, :data, :blob, assets_host, media_host, Rails.configuration.x.streaming_api_base_url
-    p.script_src  :self, assets_host, :unsafe_eval
+    p.script_src  :self, assets_host, "'wasm-unsafe-eval'"
     p.child_src   :self, :blob, assets_host
     p.worker_src  :self, :blob, assets_host
   end
